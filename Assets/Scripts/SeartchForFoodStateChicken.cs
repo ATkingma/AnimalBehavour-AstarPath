@@ -4,19 +4,27 @@ using UnityEngine;
 
 public class SeartchForFoodStateChicken : StateChicken
 {
+	public AStar astar;
+	public GameObject chicken;
 	public EatingStateChicken eating;
 	public float interactableDistance=3;
-	private bool hasFood, canRotate;
-	private float rotateAmount;
-	private Quaternion target;
+	public float newTargetCooldown = 2.5f;
+	private bool hasFood;
+	public float minRangeToEat=2;
 	public float rotateCoolDown = 5.5f;
 	public float smooth = 5.0f;
+	private bool randomTarget, hasBush;
 	public override StateChicken RunCurrentState()
 	{
 		Searth();
+		if (hasBush)
+		{
+			CheckDistance();
+		}
 		if (hasFood)
 		{
 			cm.isEating = true;
+			hasBush = false;
 			return eating;
 		}
 		else
@@ -31,39 +39,40 @@ public class SeartchForFoodStateChicken : StateChicken
 		{
 			if (cm.lastBush.transform.tag == "BerryBush")
 			{
-				FoundBush(cm.lastBush.transform);
-			}
-			else if (cm.hit.transform.tag == "OuterBox")
-			{
-				cm.transform.LookAt(cm.hit.transform);
+				FoundBush(cm.lastBush.GetComponent<BushScript>().tile);
 			}
 		}
 		else
 		{
-			hasFood = false;
-			cm.transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
-			rb.velocity = -cm.transform.forward * speed / 2;
+			Wander();
 		}
 	}
-	public void FoundBush(Transform bushPos)
+	public void CheckDistance()
 	{
-		float distance = Vector3.Distance(cm.transform.position, bushPos.position);
-		if (distance > interactableDistance)
-		{
-			cm.transform.LookAt(bushPos);
-			rb.velocity = -cm.transform.forward * speed / 2;
-		}
-		else if (distance <= interactableDistance)
+		float dist = Vector3.Distance(chicken.transform.position, cm.lastBush.transform.position);
+		if(dist<= minRangeToEat)
 		{
 			hasFood = true;
 		}
 	}
-	private IEnumerator NewRotate()
+	public void FoundBush(GameObject bushPos)
 	{
-		canRotate = false;
-		rotateAmount = Random.Range(0.00f, 360.00f);
-		target = Quaternion.Euler(0, rotateAmount, 0);
-		yield return new WaitForSeconds(rotateCoolDown);
-		canRotate = true;
+		chicken.GetComponent<AI>().target = bushPos;
+		hasBush = true;
+	}
+	public void Wander()
+	{
+		if (!randomTarget)
+		{
+			StartCoroutine("NewRandomTarget");
+		}
+	}
+	private IEnumerator NewRandomTarget()
+	{
+		int randomNumb = Random.Range(0, astar.tilesToCheck.Count);
+		chicken.GetComponent<AI>().target = astar.tilesToCheck[randomNumb].gameObject;
+		randomTarget = true;
+		yield return new WaitForSeconds(newTargetCooldown);
+		randomTarget = false;
 	}
 }

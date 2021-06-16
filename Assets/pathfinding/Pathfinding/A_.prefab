@@ -43,10 +43,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6600962f5b4c2d14eaa38dc1ffbc5558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 25, y: 25}
+  gridSize: {x: 50, y: 50}
   tileSize: 1
   layersThatCountAsObstacle:
   - Obstacle
+  layersThatCountAsRoughTerrain:
+  - RoughTerrain
   showGrid: 1
   tile: {fileID: 4845024078565232006, guid: efc6084ff9e21444aaff5f54cc2483d8, type: 3}
   startTile: {fileID: 0}

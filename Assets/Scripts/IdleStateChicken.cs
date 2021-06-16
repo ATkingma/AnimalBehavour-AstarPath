@@ -4,69 +4,69 @@ using UnityEngine;
 
 public class IdleStateChicken : StateChicken
 {
+	public GameObject chicken;
+	public AStar astar;
 	public PoopStateChicken poop;
 	public SeartchForFoodStateChicken seartchFood;
 	public SeartchForMaidStateChicken sMaid;
-	public float rotateCoolDown = 5.5f;
+	public float newTargetCooldown   = 5.5f;
 	public float smooth = 5.0f;
-	private bool canRotate=true;
-	private bool DontWander;
-	private float rotateAmount;
-	private Quaternion target;
+	private bool randomTarget, justStarted=true, startfunction;
+	private int randomNumb=0;
 	public override StateChicken RunCurrentState()
 	{
 		if (cm.food <= cm.minFood)
 		{
-			cm.lastBush = null;
 			return seartchFood;
 		}
-		else if (cm.intestineAmount >= cm.maxIntestineAmount)
+		if (cm.intestineAmount >= cm.maxIntestineAmount)
 		{
 			cm.isPooping = true;
 			return poop;
 		}
-		else if(cm.horneynis>= cm.horneynisMin)
+		else if (cm.horneynis >= cm.horneynisMin)
 		{
 			cm.horneynis = 0;
 			return sMaid;
 		}
-		if (!DontWander)
-		{
-			Wander();
-		}
-		if (canRotate)
-		{
-			StartCoroutine("NewRotate");
-		}
-		Rotate();
+		Wander();
 		return this;
 	}
 	public void Wander()
 	{
-		cm.RaycastSweep();
-		cm.CheckForward();
-		if (cm.Fhit.transform != null)
+		if (justStarted&& !startfunction)
 		{
-			if (cm.Fhit.transform.tag == "OuterBorder")
+			StartCoroutine("Started");
+		}
+		if (!randomTarget&&!justStarted)
+		{
+			StartCoroutine("NewRandomTarget");
+		}
+	}
+	private IEnumerator Started()
+	{
+		startfunction = true;
+		yield return new WaitForSeconds(0.15f);
+		justStarted = false;
+	}
+	private IEnumerator NewRandomTarget()
+	{
+		randomTarget = true;
+		randomNumb = Random.Range(0, astar.tilesToCheck.Count);
+		if (astar.tilesToCheck == new List<GridTile>())
+		{
+			yield break;
+		}
+		else if (astar.tilesToCheck[randomNumb] == null)
+		{
+			randomNumb = Random.Range(0, astar.tilesToCheck.Count);
+			if (astar.tilesToCheck[randomNumb] == null)
 			{
-				DontWander = true;
-				rotateAmount += 180;
-				return;
+				yield break;
 			}
 		}
-		rb.velocity = -cm.transform.forward * speed/2;
-	}
-	private IEnumerator NewRotate()
-	{
-		canRotate = false;
-		DontWander = !DontWander;
-		rotateAmount = Random.Range(0.00f, 360.00f);
-		target = Quaternion.Euler(0, rotateAmount, 0);
-		yield return new WaitForSeconds(rotateCoolDown);
-		canRotate = true;
-	}
-	public void Rotate()
-	{
-		cm.transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
+		chicken.GetComponent<AI>().target = astar.tilesToCheck[randomNumb].gameObject;
+		yield return new WaitForSeconds(newTargetCooldown);
+		randomTarget = false;
 	}
 }

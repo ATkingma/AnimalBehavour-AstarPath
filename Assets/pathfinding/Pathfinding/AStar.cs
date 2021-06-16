@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class AStar : MonoBehaviour
 {
     [Header("Settings")]
     public Vector2 gridSize;
     public float tileSize;
     public string[] layersThatCountAsObstacle;
-    [Header("Debugging")]
+	public string[] layersThatCountAsRoughTerrain;
+	[Header("Debugging")]
     public bool showGrid;
     public GameObject[,] tiles;
     public GameObject tile;
@@ -107,9 +107,9 @@ public class AStar : MonoBehaviour
                 tilesToCheck[i].MakePath();
                 pathmade = true;
 
-                for (int i2 = path.Count - 1; i2 > -1; i2--)
+                for (int _i = path.Count - 1; _i > -1; _i--)
                 {
-                    ai.GetComponent<AI>().waypoints.Add(path[i2].transform.position);
+                    ai.GetComponent<AI>().waypoints.Add(path[_i].transform.position);
                 }
             }
             tilesToCheckNum = i;

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BreedingStateChicken : StateChicken
 {
+	public GameObject chicken;
+	public AStar astar;
 	public float timeToBreed=30;
 	public float feelingsAddMin=15;
 	public GameObject eggPrefab;
@@ -26,19 +28,22 @@ public class BreedingStateChicken : StateChicken
 	public void Timer()
 	{
 		timer += Time.deltaTime;
-		if(timer>= timeToBreed)
+		if(timer>= timeToBreed/2)
 		{
 			if (!givingBirth)
 			{
-				GiveBirth();
+				StartCoroutine("GiveBirth");
 			}
 		}
 	}
-	public void GiveBirth()
+	public IEnumerator GiveBirth()
 	{
 		givingBirth = true;
+		int randomPos = Random.Range(0, astar.tilesToCheck.Count);
+		chicken.GetComponent<AI>().target = astar.tilesToCheck[randomPos].transform.gameObject;
+		yield return new WaitForSeconds(timeToBreed/2);
 		int randomNumb = Random.Range(0, 200);
-		if (randomNumb <= 190)
+		if (randomNumb <= 140)
 		{
 			cm.feelingsValue += feelingsAddMin;
 			Instantiate(eggPrefab, transform.position, Quaternion.identity);

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SeartchForMaidStateChicken : StateChicken
 {
+	public GameObject chicken;
+	public AStar astar;
+	public float wandertime=5;
 	public IdleStateChicken idle;
 	public BreedingStateChicken breeding;
 	public float rotateCoolDown=10;
@@ -11,10 +14,9 @@ public class SeartchForMaidStateChicken : StateChicken
 	public float minBreedingRange=2;
 	public float timeToFindMaid=40;
 	public float increesTimeToFind=20;
-	private bool canRotate, inBreedingRange, didntFound;
-	private float rotateAmount;
+	private bool  inBreedingRange, didntFound, randomTarget;
 	private float timer;
-	private Quaternion target;
+	private int randomNumb;
 	public override StateChicken RunCurrentState()
 	{
 		TimeToSeatchMaid();
@@ -46,53 +48,27 @@ public class SeartchForMaidStateChicken : StateChicken
 	{
 		if (cm.otherChicken != null)
 		{
+			if (cm.hasmaid)
+			{
+				cm.otherChicken = null;
+			}
 			cm.transform.LookAt(cm.otherChicken.transform.position);
 
-			cm.otherChicken.otherChicken = cm;
 			float distance = Vector3.Distance(cm.transform.position, cm.otherChicken.transform.position);
 			if (distance > minBreedingRange)
 			{
-				Wander();
+				chicken.GetComponent<AI>().target = cm.otherChicken.gameObject;
 			}
 			else
 			{
 				inBreedingRange = true;
 			}
 		}
-		else
+		else//zoeken
 		{
 			cm.RaycastSweep();
-			Wander();
-			Rotate();
-			if (canRotate)
-			{
-				StartCoroutine("NewRotate");
-			}
+			StartCoroutine("NewRandomTarget");
 		}
-	}
-	public void Wander()
-	{
-		if (cm.Fhit.transform != null)
-		{
-			if (cm.Fhit.transform.tag == "OuterBorder")
-			{
-				rotateAmount += 180;
-				return;
-			}
-		}
-		rb.velocity = -cm.transform.forward * speed / 2;
-	}
-	private IEnumerator NewRotate()
-	{
-		canRotate = false;
-		rotateAmount = Random.Range(0.00f, 360.00f);
-		target = Quaternion.Euler(0, rotateAmount, 0);
-		yield return new WaitForSeconds(rotateCoolDown);
-		canRotate = true;
-	}
-	public void Rotate()
-	{
-		cm.transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
 	}
 	public void DidntFindMaid()
 	{
@@ -101,10 +77,16 @@ public class SeartchForMaidStateChicken : StateChicken
 	}
 	public void ResetValues()
 	{
-		canRotate = true;
 		didntFound = false;
 		inBreedingRange = false;
 		timer = 0;
-		rotateAmount = 0;
+	}
+	private IEnumerator NewRandomTarget()
+	{
+		randomTarget = true;
+		randomNumb = Random.Range(0, astar.tilesToCheck.Count);
+		chicken.GetComponent<AI>().target = astar.tilesToCheck[randomNumb].gameObject;
+		yield return new WaitForSeconds(wandertime);
+		randomTarget = false;
 	}
 }

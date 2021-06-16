@@ -7,7 +7,9 @@ public abstract class StateChicken : MonoBehaviour
 	public string stateName;
 	[Space(3)]
 	public ChickenManager cm;
-	public Rigidbody rb;
-	public float speed=2f;
+	[Header("Movement")]
+	public float moveSpeed=5;
+	public float rotateSpeed=10;
+	public bool hasActionToMove;
 	public abstract StateChicken RunCurrentState();
 }

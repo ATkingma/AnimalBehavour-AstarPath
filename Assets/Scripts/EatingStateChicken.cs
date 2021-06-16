@@ -9,14 +9,12 @@ public class EatingStateChicken : StateChicken
 	public float berryFills=20;
 	public float timeBetweenChecks = 1.5f;
 	public float timeForEating = 1.5f;
-	private bool checkedBush, food, idle, checking, isEating;
+	private bool  food, idle, isEating;
 	public override StateChicken RunCurrentState()
 	{
-		if (!checkedBush)
-		{
-			CheckBush();
-		}
-		else if (food)
+		print("4");
+		Check();
+		if (food)
 		{
 			food = false;
 			return seartchState;
@@ -30,14 +28,9 @@ public class EatingStateChicken : StateChicken
 		}
 		return this;
 	}
-	public void CheckBush()
+	public void Check()
 	{
-		checkedBush = true;
-		if (!checking)
-		{
-			StartCoroutine("CheckedBush");
-		}
-		if (cm.lastBush.transform.GetComponent<BushScript>().berryAmount <= 0||cm.food>=100)
+		if (cm.food>=100)
 		{
 			if (cm.food <= cm.minFood)
 			{
@@ -52,29 +45,18 @@ public class EatingStateChicken : StateChicken
 		{
 			if (!isEating)
 			{
+				print("1");
 				StartCoroutine("Eat");
 			}
 		}
-
 	}
 	private IEnumerator Eat()
 	{
 		isEating = true;
-		StartCoroutine("CheckedBush");
-		if (cm.lastBush.transform.GetComponent<BushScript>().berryAmount > 0)
-		{
-			cm.lastBush.transform.GetComponent<BushScript>().berryAmount--;
-			cm.food += berryFills;
-		}
+		cm.food += berryFills;
+		print("2");
 		yield return new WaitForSeconds(timeForEating);
+		print("3");
 		isEating = false;
-		checkedBush = false;
-	}
-	private IEnumerator CheckedBush()
-	{
-		checking = true;
-		cm.RaycastSweep();
-		yield return new WaitForSeconds(timeBetweenChecks);
-		checking = false;
 	}
 }
