@@ -16,6 +16,11 @@ public class PoopStateChicken : StateChicken
 	private bool randomTarget, isPooping;
 	public override StateChicken RunCurrentState()
 	{
+		if (chicken == null|| astar==null)
+		{
+			chicken = cm.transform.gameObject;
+			astar = FindObjectOfType<AStar>();
+		}
 		if (cm.intestineAmount <= cm.maxIntestineAmount)
 		{
 			cm.isEating = false;

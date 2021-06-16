@@ -15,6 +15,11 @@ public class IdleStateChicken : StateChicken
 	private int randomNumb=0;
 	public override StateChicken RunCurrentState()
 	{
+		if (chicken == null || astar == null)
+		{
+			chicken = cm.transform.gameObject;
+			astar = FindObjectOfType<AStar>();
+		}
 		if (cm.food <= cm.minFood)
 		{
 			return seartchFood;
@@ -51,6 +56,10 @@ public class IdleStateChicken : StateChicken
 	}
 	private IEnumerator NewRandomTarget()
 	{
+		if (astar == null)
+		{
+			yield break;
+		}
 		randomTarget = true;
 		randomNumb = Random.Range(0, astar.tilesToCheck.Count);
 		if (astar.tilesToCheck == new List<GridTile>())

@@ -9,6 +9,7 @@ public class ChickenManager : MonoBehaviour
 {
 	[Header("Player Values")]
 	public GameObject chicken;
+	public GameObject cam;
 	public int health=10;
 	[Header("UI")]
 	public Image fillArea;
@@ -26,6 +27,7 @@ public class ChickenManager : MonoBehaviour
 	[Header("public bools")]
 	public bool isEating;
 	public bool isPooping;
+	public bool isBreeding;
 	public bool maidIsClose;
 	public bool hasmaid;
 	[Header("reduce/add amount")]
@@ -35,6 +37,7 @@ public class ChickenManager : MonoBehaviour
 	[Header("Times")]
 	public float damageCooldownTime=1.5f;
 	public float timeToRecoverHealth=5f;
+	public float timeBeforeDyingOfAge;
 	[Header("raycast vars")]
 	public LayerMask mapLayer;
 	public float distanceForwardRay;
@@ -54,20 +57,23 @@ public class ChickenManager : MonoBehaviour
 
 	private void Start()
 	{
-		food = Random.Range(10, 100);
+		food = Random.Range(20, 100);
 		foodReduce = Random.Range(0.1f, 5);
 		extraFoodReduce = Random.Range(0.01f, 0.5f);
 		intestineAmount = Random.Range(0, 70);
 		intestineAdd = Random.Range(1, 5);
-		horneynisAdd = Random.Range(0.5f, 5);
+		horneynisAdd = Random.Range(1, 1.25f);
+		timeBeforeDyingOfAge = Random.Range(300, 900);
+		FindObjectOfType<CameraSwitcher>().cams.Add(cam);
+		StartCoroutine("Age");
 	}
 	private void Update()
 	{
-		if (!isPooping || !isEating)
+		if (!isPooping || !isEating|| !isBreeding)
 		{
 			food -= foodReduce * ((Time.deltaTime / foodReduce)+ foodReduce * extraFoodReduce/minFood)/4;
 			intestineAmount += intestineAdd * (Time.deltaTime / intestineAdd);
-			horneynis += (Time.deltaTime + horneynisMin) * horneynisAdd + horneynisAdd / 4;
+			horneynis += (Time.deltaTime / horneynisAdd)/ horneynisAdd;
 		}
 		if (food < 0)
 		{
@@ -86,7 +92,7 @@ public class ChickenManager : MonoBehaviour
 		}
 		if (health <= 0)
 		{
-			KillChicken();
+			StartCoroutine("KillChicken");
 		}
 	}
 	public IEnumerator GetHealth()
@@ -103,6 +109,13 @@ public class ChickenManager : MonoBehaviour
 		health-=1;
 		yield return new WaitForSeconds(damageCooldownTime);
 		doingDamage = false;
+	}
+	public IEnumerator Age()
+	{
+		yield return new WaitForSeconds(timeBeforeDyingOfAge/2);
+		chicken.GetComponent<AI>().moveSpeed /= 1.5f;
+		yield return new WaitForSeconds(timeBeforeDyingOfAge / 2);
+		StartCoroutine("KillChicken");
 	}
 	public void CheckForward()
 	{
@@ -155,8 +168,10 @@ public class ChickenManager : MonoBehaviour
 			maidIsClose = false;
 		}
 	}
-	public void KillChicken()
+	public IEnumerator KillChicken()
 	{
+		FindObjectOfType<CameraSwitcher>().cams.Remove(cam);
+		yield return new WaitForSeconds(0.1f);
 		Destroy(gameObject);
 	}
 }

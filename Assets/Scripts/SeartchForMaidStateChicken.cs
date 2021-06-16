@@ -7,6 +7,7 @@ public class SeartchForMaidStateChicken : StateChicken
 	public GameObject chicken;
 	public AStar astar;
 	public float wandertime=5;
+	public SeartchForFoodStateChicken seartchFood;
 	public IdleStateChicken idle;
 	public BreedingStateChicken breeding;
 	public float rotateCoolDown=10;
@@ -19,17 +20,28 @@ public class SeartchForMaidStateChicken : StateChicken
 	private int randomNumb;
 	public override StateChicken RunCurrentState()
 	{
+		if (chicken == null || astar == null)
+		{
+			chicken = cm.transform.gameObject;
+			astar = FindObjectOfType<AStar>();
+		}
 		TimeToSeatchMaid();
 		Seartch();
-		if (cm.maidIsClose&& inBreedingRange)
+		if (cm.maidIsClose)
 		{
 			ResetValues();
+			cm.isBreeding = true;
 			return breeding;
 		}
 		else if (didntFound)
 		{
 			ResetValues();
 			return idle;
+		}
+		else if (cm.food < cm.minFood / 2)
+		{
+			ResetValues();
+			return seartchFood;
 		}
 		return this;
 	}
@@ -54,15 +66,7 @@ public class SeartchForMaidStateChicken : StateChicken
 			}
 			cm.transform.LookAt(cm.otherChicken.transform.position);
 
-			float distance = Vector3.Distance(cm.transform.position, cm.otherChicken.transform.position);
-			if (distance > minBreedingRange)
-			{
-				chicken.GetComponent<AI>().target = cm.otherChicken.gameObject;
-			}
-			else
-			{
-				inBreedingRange = true;
-			}
+			chicken.GetComponent<AI>().target = cm.otherChicken.gameObject;
 		}
 		else//zoeken
 		{

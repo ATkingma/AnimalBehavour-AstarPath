@@ -19,6 +19,7 @@ public class AI : MonoBehaviour
     private int waypointcount;
 	private void Start()
 	{
+		pathfinding = FindObjectOfType<AStar>();
 		waypointcount = minimalWayPointCount;
 	}
 	void Update()
@@ -41,6 +42,10 @@ public class AI : MonoBehaviour
     }
     void NewPath()
     {
+		if (target == null)
+		{
+			return;
+		}
         waypoints = new List<Vector3>();
         pathfinding.Pathfind(target.transform, transform);
         waypointcount = minimalWayPointCount;

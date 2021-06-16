@@ -14,6 +14,11 @@ public class BreedingStateChicken : StateChicken
 	private bool givingBirth, gaveBrith;
 	public override StateChicken RunCurrentState()
 	{
+		if (chicken == null || astar == null)
+		{
+			chicken = cm.transform.gameObject;
+			astar = FindObjectOfType<AStar>();
+		}
 		Timer();
 		if (gaveBrith)
 		{
@@ -21,6 +26,7 @@ public class BreedingStateChicken : StateChicken
 			gaveBrith = false;
 			cm.horneynis = 0;
 			timer = 0;
+			cm.isBreeding = false;
 			return idle;
 		}
 		return this;

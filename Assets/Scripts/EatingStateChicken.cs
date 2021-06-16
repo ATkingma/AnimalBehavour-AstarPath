@@ -12,7 +12,6 @@ public class EatingStateChicken : StateChicken
 	private bool  food, idle, isEating;
 	public override StateChicken RunCurrentState()
 	{
-		print("4");
 		Check();
 		if (food)
 		{
@@ -45,7 +44,6 @@ public class EatingStateChicken : StateChicken
 		{
 			if (!isEating)
 			{
-				print("1");
 				StartCoroutine("Eat");
 			}
 		}
@@ -54,9 +52,7 @@ public class EatingStateChicken : StateChicken
 	{
 		isEating = true;
 		cm.food += berryFills;
-		print("2");
 		yield return new WaitForSeconds(timeForEating);
-		print("3");
 		isEating = false;
 	}
 }

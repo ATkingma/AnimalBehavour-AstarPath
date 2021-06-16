@@ -16,6 +16,11 @@ public class SeartchForFoodStateChicken : StateChicken
 	private bool randomTarget, hasBush;
 	public override StateChicken RunCurrentState()
 	{
+		if (chicken == null || astar == null)
+		{
+			chicken = cm.transform.gameObject;
+			astar = FindObjectOfType<AStar>();
+		}
 		Searth();
 		if (hasBush)
 		{

@@ -94,5 +94,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6792002bd576db48a1ad84d3ca87766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chickenPrefab: {fileID: 8669754844088563414, guid: 146e2b8d97645944695b7acc8ac055e7, type: 3}
+  chickenPrefab: {fileID: 7965002439035965824, guid: 2d0297d769206004fb6829ce8d365810, type: 3}
   grotwAmount: {x: 0.05, y: 0.05, z: 0.05}

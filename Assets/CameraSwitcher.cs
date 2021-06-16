@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class CameraSwitcher : MonoBehaviour
 {
-	public GameObject[] cams;
+	public List<GameObject> cams= new List<GameObject>();
 	private int index;
 	private void Start()
 	{
-		cams = GameObject.FindGameObjectsWithTag("MainCamera");
-		foreach(GameObject cam in cams)
-		{
-			cam.SetActive(false);
-		}
-		cams[index].SetActive(true);
+		Invoke("LateStart", 0.05f);
+	}
+	public void LateStart()
+	{
+		cams[0].SetActive(true);
 	}
 	private void Update()
 	{
@@ -25,7 +24,7 @@ public class CameraSwitcher : MonoBehaviour
 	public void Switch()
 	{
 		index++;
-		if (index > cams.Length-1)
+		if (index > cams.Count-1)
 		{
 			index = 0;
 		}
