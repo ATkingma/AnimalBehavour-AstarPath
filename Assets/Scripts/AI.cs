@@ -1,21 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class AI : MonoBehaviour
 {
+	//public
     [Header("Pathfinding")]
     public AStar pathfinding;
     public GameObject target;
     public List<Vector3> waypoints = new List<Vector3>();
+	[Range(0,10)]
 	public int minimalWayPointCount=3;
     public float distanceForNextWaypoint;
     public float pathUpdateTime;
-    float pathUpdateTimeTime;
     [Header("Movement")]
     public float moveSpeed;
     public float rotateSpeed;
 
+	//private
+    private float time;
     private int waypointcount;
 	private void Start()
 	{
@@ -24,13 +26,12 @@ public class AI : MonoBehaviour
 	}
 	void Update()
     {
-        pathUpdateTimeTime -= Time.deltaTime;
-        if(pathUpdateTimeTime < 0)
+		time -= Time.deltaTime;
+        if(time < 0)
         {
             NewPath();
-            pathUpdateTimeTime = pathUpdateTime;
+			time = pathUpdateTime;
         }
-
         if (waypointcount < waypoints.Count)
         {
             ManageWaypoints();
@@ -40,7 +41,8 @@ public class AI : MonoBehaviour
 			}
         }
     }
-    void NewPath()
+	#region make path
+	void NewPath()
     {
 		if (target == null)
 		{
@@ -54,10 +56,12 @@ public class AI : MonoBehaviour
     {
         if(Vector3.Distance(new Vector3(transform.position.x , transform.position.y, transform.position.z), new Vector3 (waypoints[waypointcount].x, transform.position.y, waypoints[waypointcount].z)) < distanceForNextWaypoint)
         {
-			waypointcount++; ;
+			waypointcount++;
         }
     }
-    void Move()
+	#endregion
+	#region movement
+	void Move()
     {
         RotateTowards(waypoints[waypointcount]);
         transform.Translate(0, 0, moveSpeed * Time.deltaTime);
@@ -66,4 +70,5 @@ public class AI : MonoBehaviour
     {
         transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, target - transform.position, rotateSpeed * Time.deltaTime, 0.0f));
     }
+	#endregion
 }

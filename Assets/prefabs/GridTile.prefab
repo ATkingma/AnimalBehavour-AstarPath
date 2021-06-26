@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   red: {r: 1, g: 0, b: 0, a: 1}
-  green: {r: 1, g: 1, b: 1, a: 1}
+  green: {r: 0, g: 1, b: 0.08193016, a: 1}
   brown: {r: 0.38679248, g: 0.22218218, b: 0, a: 0}
   startColor: {r: 0, g: 0, b: 0, a: 0}
   dfStart: 0

@@ -22,14 +22,14 @@ public class GridTile : MonoBehaviour
 	private void Start()
     {
         startColor = transform.GetComponent<MeshRenderer>().material.color;
+        aStar = transform.parent.GetComponent<AStar>();
     }
     void CheckForObstacle(Transform target, Transform start)
     {
-        //reset everything.
-        aStar = transform.parent.GetComponent<AStar>();
         check = false;
-        transform.GetComponent<MeshRenderer>().material.color = startColor;
         prevTile = null;
+
+        transform.GetComponent<MeshRenderer>().material.color = startColor;
 
         Collider[] colliders = Physics.OverlapBox(new Vector3(transform.position.x, transform.position.y + checkHeight * .5f, transform.position.z), new Vector3(aStar.tileSize * .5f, checkHeight, aStar.tileSize * .5f));
         
@@ -130,7 +130,7 @@ public class GridTile : MonoBehaviour
 				neighboring[i].prevTile = transform.GetComponent<GridTile>();
 				neighboring[i].check = true;
 				aStar.tilesToCheck.Add(neighboring[i]);
-				amount += 1;
+				amount ++;
 			}
 		}
     }
