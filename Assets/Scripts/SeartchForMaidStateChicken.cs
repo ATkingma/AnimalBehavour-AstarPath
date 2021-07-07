@@ -68,7 +68,7 @@ public class SeartchForMaidStateChicken : StateChicken
 
 			chicken.GetComponent<AI>().target = cm.otherChicken.gameObject;
 		}
-		else//zoeken
+		else//seartch
 		{
 			cm.RaycastSweep();
 			StartCoroutine("NewRandomTarget");

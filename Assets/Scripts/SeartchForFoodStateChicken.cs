@@ -11,8 +11,6 @@ public class SeartchForFoodStateChicken : StateChicken
 	public float newTargetCooldown = 2.5f;
 	private bool hasFood;
 	public float minRangeToEat=2;
-	public float rotateCoolDown = 5.5f;
-	public float smooth = 5.0f;
 	private bool randomTarget, hasBush;
 	public override StateChicken RunCurrentState()
 	{

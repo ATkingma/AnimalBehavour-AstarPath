@@ -55,14 +55,14 @@ public class AStar : MonoBehaviour
             }       
         }
     }
-    void UpdateGrid(Transform target, Transform start)
+    void UpdateGrid(Transform target, Transform aiPos)
     {
         int x = 0;
         int y = 0;
 
         for (int i = 0; i < (gridSize.x * gridSize.y); i++)
         {
-            tiles[y, x].GetComponent<GridTile>().UpdateGrid(target, start);
+            tiles[y, x].GetComponent<GridTile>().UpdateGrid(target, aiPos);
             if (x == (int)gridSize.x - 1)
             {
                 x = 0;
@@ -74,16 +74,16 @@ public class AStar : MonoBehaviour
             }
         }
     }
-    public void Pathfind(Transform target, Transform start)	
+    public void Pathfind(Transform target, Transform aiPos)	
     {
         pathmade = false;
+        startTile = null;
+        endTile = null;
         tilesToCheckNum = 0;
         path = new List<GridTile>();
         tilesToCheck = new List<GridTile>();
-        startTile = null;
-        endTile = null;
 
-        UpdateGrid(target, start);
+        UpdateGrid(target, aiPos);
         int x = 0;
         int y = 0;
         for (int i = 0; i < (gridSize.x * gridSize.y); i++)
@@ -100,7 +100,7 @@ public class AStar : MonoBehaviour
             }
         }
         startTile.GetComponent<GridTile>().FindLowestdfEnd();
-        LookForPath(start);
+        LookForPath(aiPos);
     }
     public void LookForPath(Transform ai)
     {
