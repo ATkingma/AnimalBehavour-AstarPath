@@ -15,7 +15,7 @@ public class SeartchForMaidStateChicken : StateChicken
 	public float minBreedingRange=2;
 	public float timeToFindMaid=40;
 	public float increesTimeToFind=20;
-	private bool  inBreedingRange, didntFound, randomTarget;
+	private bool didntFound, randomTarget;
 	private float timer;
 	private int randomNumb;
 	public override StateChicken RunCurrentState()
@@ -82,7 +82,6 @@ public class SeartchForMaidStateChicken : StateChicken
 	public void ResetValues()
 	{
 		didntFound = false;
-		inBreedingRange = false;
 		timer = 0;
 	}
 	private IEnumerator NewRandomTarget()

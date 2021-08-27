@@ -6,7 +6,6 @@ public class BreedingStateChicken : StateChicken
 	public GameObject chicken;
 	public AStar astar;
 	public float timeToBreed=30;
-	public float feelingsAddMin=15;
 	public GameObject eggPrefab;
 	public IdleStateChicken idle;
 	private float timer;
@@ -50,13 +49,11 @@ public class BreedingStateChicken : StateChicken
 		int randomNumb = Random.Range(0, 200);
 		if (randomNumb <= 140)
 		{
-			cm.feelingsValue += feelingsAddMin;
 			Instantiate(eggPrefab, transform.position, Quaternion.identity);
 			gaveBrith = true;
 		}
 		else
 		{
-			cm.feelingsValue -= feelingsAddMin;
 			gaveBrith = true;
 		}
 	}

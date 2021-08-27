@@ -52,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -94,5 +95,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6792002bd576db48a1ad84d3ca87766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chickenPrefab: {fileID: 7965002439035965824, guid: 2d0297d769206004fb6829ce8d365810, type: 3}
+  chickenPrefab: {fileID: 3397907568422183533, guid: fbac673a2480e7c42b44e1869ad9fd2f, type: 3}
   grotwAmount: {x: 0.05, y: 0.05, z: 0.05}

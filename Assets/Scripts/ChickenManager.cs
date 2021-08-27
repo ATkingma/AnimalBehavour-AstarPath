@@ -11,15 +11,10 @@ public class ChickenManager : MonoBehaviour
 	public GameObject chicken;
 	public GameObject cam;
 	public int health=10;
-	[Header("UI")]
-	public Image fillArea;
-	public Text feelings;
-	public Text progress;
-	public Text state;
-	public float feelingsValue=100;
 	public float food = 100;
 	public float horneynis = 0;
 	public float intestineAmount = 10;
+	public int age;
 	[Header("minmalAmount")]
 	public float minFood = 50f;
 	public float maxIntestineAmount = 75f;
@@ -53,22 +48,33 @@ public class ChickenManager : MonoBehaviour
 	private Vector3 targetPos;
 	private bool doingDamage, getHealth;
 	private float timerForRecoverHealth;
-	private float extraFoodReduce;	
+	private float extraFoodReduce;
+	private float timer;
 
 	private void Start()
 	{
 		food = Random.Range(20, 100);
-		foodReduce = Random.Range(0.1f, 5);
+		foodReduce = Random.Range(0.1f, 3);
 		extraFoodReduce = Random.Range(0.01f, 0.5f);
 		intestineAmount = Random.Range(0, 70);
 		intestineAdd = Random.Range(1, 5);
-		horneynisAdd = Random.Range(1, 1.25f);
+		horneynisAdd = Random.Range(1.5f, 2.25f);
 		timeBeforeDyingOfAge = Random.Range(300, 900);
 		FindObjectOfType<CameraSwitcher>().cams.Add(cam);
+		FindObjectOfType<CameraSwitcher>().chickens.Add(gameObject);
 		StartCoroutine("Age");
 	}
 	private void Update()
 	{
+		if(timer>= timeBeforeDyingOfAge)
+		{
+			StartCoroutine("KillChicken");
+		}
+		else
+		{
+			timer += Time.deltaTime;
+			age = (int)timer / 45;
+		}
 		if (!isPooping || !isEating|| !isBreeding)
 		{
 			food -= foodReduce * ((Time.deltaTime / foodReduce)+ foodReduce * extraFoodReduce/minFood)/4;
@@ -114,8 +120,6 @@ public class ChickenManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(timeBeforeDyingOfAge/2);
 		chicken.GetComponent<AI>().moveSpeed /= 1.5f;
-		yield return new WaitForSeconds(timeBeforeDyingOfAge / 2);
-		StartCoroutine("KillChicken");
 	}
 	public void CheckForward()
 	{
@@ -171,6 +175,7 @@ public class ChickenManager : MonoBehaviour
 	public IEnumerator KillChicken()
 	{
 		FindObjectOfType<CameraSwitcher>().cams.Remove(cam);
+		FindObjectOfType<CameraSwitcher>().chickens.Remove(gameObject);
 		yield return new WaitForSeconds(0.1f);
 		Destroy(gameObject);
 	}
