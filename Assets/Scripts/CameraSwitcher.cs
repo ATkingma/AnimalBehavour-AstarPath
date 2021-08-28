@@ -55,9 +55,12 @@ public class CameraSwitcher : MonoBehaviour
 			AddIndex();
 			Switch();
 		}
-		if (chickens[index] != null)
+		if (index <= chickens.Count)
 		{
-			UpdateChickenInfo(chickens[index]);
+			if (chickens[index] != null)
+			{
+				UpdateChickenInfo(chickens[index]);
+			}
 		}
 	}
 	public void ResetTime()

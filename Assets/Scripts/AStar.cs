@@ -9,8 +9,10 @@ public class AStar : MonoBehaviour
     public float tileSize;
     public string[] layersThatCountAsObstacle;
 	public string[] layersThatCountAsRoughTerrain;
-	[Header("Debugging")]
-	public GameObject tile;
+    [Header("Debugging")]
+    public MeshRenderer terrainLeftSide;
+    public MeshRenderer terrainRightSide;
+    public GameObject tile;
     public GameObject startTile;
     public GameObject endTile;
     public GameObject[,] tiles;
@@ -38,10 +40,14 @@ public class AStar : MonoBehaviour
             tiles[y, x].GetComponent<GridTile>().aStar = transform.GetComponent<AStar>();
             if (debugging)
             {
+                terrainLeftSide.enabled = false;
+                terrainRightSide.enabled = false;
                 tiles[y, x].GetComponent<MeshRenderer>().enabled = true;
             }
             else
             {
+                terrainLeftSide.enabled = true;
+                terrainRightSide.enabled = true;
                 tiles[y, x].GetComponent<MeshRenderer>().enabled = false;
             }
             if (x == (int)gridSize.x -1)
@@ -142,11 +148,15 @@ public class AStar : MonoBehaviour
 			if (debugging)
 			{
 				tiles[y, x].GetComponent<MeshRenderer>().enabled = true;
-			}
+                terrainLeftSide.enabled = false;
+                terrainRightSide.enabled = false;
+            }
 			else
 			{
 				tiles[y, x].GetComponent<MeshRenderer>().enabled = false;
-			}
+                terrainLeftSide.enabled = true;
+                terrainRightSide.enabled = true;
+            }
 			if (x == (int)gridSize.x - 1)
 			{
 				x = 0;
